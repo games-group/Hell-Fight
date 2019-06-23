@@ -5,10 +5,11 @@ import utils
 import locals
 
 
+# class to make it easy to represent a mouse
 class Mouse:
     def __init__(self):
         self.pos = (0, 0)
-        self.down = False
+        self.down = False  # short for mouse_button_down
 
 
 class _EventHandler:
@@ -35,6 +36,7 @@ class _EventHandler:
                 self.mouse.pos = i.pos
             else:
                 pygame.event.post(i)
+                # put it back so it can be reused
 
 
 class Game(utils.classes.Root):
@@ -46,13 +48,14 @@ class Game(utils.classes.Root):
 
     def rewind(self):
         self.__init__()
+        # easy implementation of rewind: re-init self
 
     def run(self):
         while True:
             self.update()
 
     def update(self):
-        self.handler.update()
+        self.handler.update()  # get the newest keys
         keys = self.handler.keys[:]
         for i in self.players:
             i.update(keys)
@@ -62,44 +65,47 @@ class Game(utils.classes.Root):
         pygame.quit()
 
 
-class Player(utils,classes.Root):
+class Player(utils.classes.Root):
+    PLAYER = slice(0)
+
     X = slice(1)
     Y = slice(2)
+    # syntax sugar
 
     def __init__(self):
         self.mode = ""
         self.map = []  # Empty Empty Empty Empty Empty
-        self.player = []  # Empty Empty Empty Empty Empty
+        self.player = []  # Name x y ex1 ex2
         self.player.append(["Player", 18000, 12000, None, None])
         self.player.append(["Zombie", 17820, 11820, "Zombie", 120])
         self.walking = False
         self.walk = 1
         self.change = 0
-        self.change2 = 7
+        self.change2 = 7  # how much change has to be before the player moved
         self.move_speed = 6
 
-    def update(self,key):
+    def update(self, keys):
         if self.change > self.change2:
             self.walking = False
             if pygame.K_w in keys:
                 self.mode = "Up"
-                self.player[0][self.Y] -= self.move_speed
+                self.player[self.PLAYER][self.Y] -= self.move_speed
                 self.change = 0
                 self.walking = True
             elif pygame.K_s in keys:
                 self.mode = "Down"
-                self.player[0][self.Y] += self.move_speed
+                self.player[self.PLAYER][self.Y] += self.move_speed
                 self.change = 0
                 self.walking = True
 
             if pygame.K_a in keys:
                 self.mode = "Left"
-                self.player[0][self.X] -= self.move_speed
+                self.player[self.PLAYER][self.X] -= self.move_speed
                 self.change = 0
                 self.walking = True
             elif pygame.K_d in keys:
                 self.mode = "Right"
-                self.player[0][self.X] += self.move_speed
+                self.player[self.PLAYER][self.X] += self.move_speed
                 self.change = 0
                 self.walking = True
         self.change += 1
