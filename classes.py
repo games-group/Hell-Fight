@@ -1,18 +1,18 @@
 import pygame
 
 import utils
-
+from utils.classes import Root
 import locals
 
 
 # class to make it easy to represent a mouse
-class Mouse:
+class Mouse(Root):
     def __init__(self):
         self.pos = (0, 0)
         self.down = False  # short for mouse_button_down
 
 
-class _EventHandler:
+class _EventHandler(Root):
     def __init__(self):
         self.keys = {}
         self.mouse = Mouse()
@@ -39,7 +39,7 @@ class _EventHandler:
                 # put it back so it can be reused
 
 
-class Game(utils.classes.Root):
+class Game(Root):
     def __init__(self):
         super().__init__()
         self.win = pygame.display.set_mode(locals.SIZE)
@@ -65,7 +65,7 @@ class Game(utils.classes.Root):
         pygame.quit()
 
 
-class Player(utils.classes.Root):
+class Player(Root):
     PLAYER = slice(0)
 
     X = slice(1)
@@ -74,7 +74,7 @@ class Player(utils.classes.Root):
 
     def __init__(self):
         self.mode = ""
-        self.map = []  # Empty Empty Empty Empty Empty
+        self.map = []  # Name x y ex1 ex2
         self.player = []  # Name x y ex1 ex2
         self.player.append(["Player", 18000, 12000, None, None])
         self.player.append(["Zombie", 17820, 11820, "Zombie", 120])

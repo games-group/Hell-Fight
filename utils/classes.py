@@ -1,5 +1,11 @@
 import functools
+import types
+import logging
+from abc import ABCMeta, abstractmethod
 
+
+logging.basicConfig(level = logging.DEBUG)
+logging.disable(logging.CRITICAL)
 
 def __repr__(self):
     name = self.__class__.__name__
@@ -15,7 +21,7 @@ def __init__(self, *args, **kwds):
     raise NotImplementedError("__init__ of class %s not implemented" % self.__class__.__name__)
 
 
-class MyMeta(type):
+class MyMeta(ABCMeta):
     def __call__(cls, *args, **key_args):
         inst = super().__call__(*args, **key_args)
         inst._args = [repr(i) for i in args]
@@ -23,7 +29,11 @@ class MyMeta(type):
         return inst
 
     def __new__(mcs, class_name, bases, class_dict):
+        logging.debug("metaclassing %s" % class_name)
         for k in class_dict:
+            if not isinstance(class_dict[k], types.FunctionType):
+                if k.upper() == k:  # const
+                    continue
             if k.lower() != k:
                 raise NameError("Bad name: %s" % k)
         class_dict.setdefault("__repr__", __repr__)
