@@ -1,18 +1,17 @@
 import pygame
 
-import utils
-from utils.classes import Root
+from utils.classes import MyMeta
 import locals
 
 
 # class to make it easy to represent a mouse
-class Mouse(Root):
+class Mouse(metaclass=MyMeta):
     def __init__(self):
         self.pos = (0, 0)
         self.down = False  # short for mouse_button_down
 
 
-class _EventHandler(Root):
+class _EventHandler(metaclass=MyMeta):
     def __init__(self):
         self.keys = {}
         self.mouse = Mouse()
@@ -39,7 +38,7 @@ class _EventHandler(Root):
                 # put it back so it can be reused
 
 
-class Game(Root):
+class Game(metaclass=MyMeta):
     def __init__(self):
         super().__init__()
         self.win = pygame.display.set_mode(locals.SIZE)
@@ -65,7 +64,7 @@ class Game(Root):
         pygame.quit()
 
 
-class Player(Root):
+class Player(metaclass=MyMeta):
     PLAYER = slice(0)
 
     X = slice(1)
