@@ -10,14 +10,18 @@ class Mouse(metaclass=MyMeta):
         self.pos = (0, 0)
         self.down = False  # short for mouse_button_down
 
+    def clear(self):
+        self.__init__()
+
 
 class _EventHandler(metaclass=MyMeta):
     def __init__(self):
         self.keys = {}
         self.mouse = Mouse()
+        self.quit = False
 
     def rewind(self):
-        self.keys.clear()
+        self.__init__()
 
     def update(self):
         for i in pygame.event.get():
@@ -33,6 +37,8 @@ class _EventHandler(metaclass=MyMeta):
                 self.mouse.down = False
             elif i.type == pygame.MOUSEMOTION:
                 self.mouse.pos = i.pos
+            elif i.type == pygame.QUIT:
+                self.quit = True
             else:
                 pygame.event.post(i)
                 # put it back so it can be reused
@@ -50,14 +56,17 @@ class Game(metaclass=MyMeta):
         # easy implementation of rewind: re-init self
 
     def run(self):
-        while True:
-            self.update()
+        while not self.update():
+            pass
+        return True
 
     def update(self):
         self.handler.update()  # get the newest keys
-        keys = self.handler.keys[:]
+        if self.handler.quit:
+            return True
         for i in self.players:
-            i.update(keys)
+            i.update(self.handler)
+        return False
 
     @staticmethod
     def stop():
